@@ -83,7 +83,6 @@ bool isSessionActive(PowerHintSessionImpl* session) {
 
 std::shared_ptr<aidl::android::hardware::power::IPowerHintSession> setPowerHintSession(
         int32_t tgid, int32_t uid, const std::vector<int32_t>& threadIds) {
-    LOG(INFO) << "setPowerHintSession ";
     std::shared_ptr<aidl::android::hardware::power::IPowerHintSession> mPowerSession =
             ndk::SharedRefBase::make<PowerHintSessionImpl>(tgid, uid, threadIds);
 
@@ -157,18 +156,15 @@ void PowerHintSessionImpl::resumeThreadPipelining() {
 }
 
 ndk::ScopedAStatus PowerHintSessionImpl::updateTargetWorkDuration(int64_t in_targetDurationNanos) {
-    LOG(INFO) << "updateTargetWorkDuration " << in_targetDurationNanos;
     return ndk::ScopedAStatus::ok();
 }
 
 ndk::ScopedAStatus PowerHintSessionImpl::reportActualWorkDuration(
         const std::vector<::aidl::android::hardware::power::WorkDuration>& in_durations) {
-    LOG(INFO) << "reportActualWorkDuration ";
     return ndk::ScopedAStatus::ok();
 }
 
 ndk::ScopedAStatus PowerHintSessionImpl::pause() {
-    LOG(INFO) << "PowerHintSessionImpl::pause ";
     if (isSessionAlive(this)) {
         setSessionActivity(this, false);
         sendHint(aidl::android::hardware::power::SessionHint::CPU_LOAD_RESET);
@@ -178,7 +174,6 @@ ndk::ScopedAStatus PowerHintSessionImpl::pause() {
 }
 
 ndk::ScopedAStatus PowerHintSessionImpl::resume() {
-    LOG(INFO) << "PowerHintSessionImpl::resume ";
     if (isSessionAlive(this)) {
         sendHint(aidl::android::hardware::power::SessionHint::CPU_LOAD_RESUME);
         resumeThreadPipelining();
@@ -188,7 +183,6 @@ ndk::ScopedAStatus PowerHintSessionImpl::resume() {
 }
 
 ndk::ScopedAStatus PowerHintSessionImpl::close() {
-    LOG(INFO) << "PowerHintSessionImpl::close ";
 
     if (isSessionAlive(this)) {
         sendHint(aidl::android::hardware::power::SessionHint::CPU_LOAD_RESET);
@@ -204,7 +198,6 @@ ndk::ScopedAStatus PowerHintSessionImpl::close() {
 
 ndk::ScopedAStatus PowerHintSessionImpl::sendHint(
         aidl::android::hardware::power::SessionHint hint) {
-    LOG(INFO) << "PowerHintSessionImpl::sendHint ";
     if (!isSessionActive(this)) return ndk::ScopedAStatus::fromExceptionCode(EX_ILLEGAL_STATE);
     switch (hint) {
         case aidl::android::hardware::power::SessionHint::CPU_LOAD_UP:
@@ -227,7 +220,6 @@ ndk::ScopedAStatus PowerHintSessionImpl::sendHint(
 }
 
 ndk::ScopedAStatus PowerHintSessionImpl::setThreads(const std::vector<int32_t>& threadIds) {
-    LOG(INFO) << "PowerHintSessionImpl::setThreads ";
     if (threadIds.size() == 0) {
         LOG(ERROR) << "Error: threadIds.size() shouldn't be " << threadIds.size();
         return ndk::ScopedAStatus::fromExceptionCode(EX_ILLEGAL_ARGUMENT);
